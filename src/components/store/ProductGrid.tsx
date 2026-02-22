@@ -1,7 +1,7 @@
 import ProductCard from './ProductCard';
 import CartDrawer from './CartDrawer';
 import { CartProvider } from '../../context/CartContext';
-import type { Product } from '../../data/products';
+import type { Product } from '../../data/supabase-products';
 
 interface ProductGridProps {
     products: Product[];

@@ -1,5 +1,5 @@
 import { useCart } from '../../context/CartContext';
-import { formatPrice, type Product } from '../../data/products';
+import { formatPrice, type Product } from '../../data/supabase-products';
 
 interface ProductCardProps {
     product: Product;

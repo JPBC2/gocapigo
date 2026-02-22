@@ -4,7 +4,7 @@
 -- ============================================
 
 -- 1. Products Table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -21,9 +21,9 @@ CREATE TABLE products (
 );
 
 -- Index for slug lookups and category filtering
-CREATE INDEX idx_products_slug ON products(slug);
-CREATE INDEX idx_products_category ON products(category);
-CREATE INDEX idx_products_is_active ON products(is_active);
+CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active);
 
 -- RPC: Atomically decrement stock (called from orders.ts)
 CREATE OR REPLACE FUNCTION decrement_stock(product_id UUID, qty INTEGER)
@@ -49,7 +49,7 @@ CREATE TRIGGER products_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- 2. Orders Table
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_number SERIAL,
   customer_name TEXT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TRIGGER orders_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- 3. Order Items Table
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id),
@@ -84,10 +84,10 @@ CREATE TABLE order_items (
   total_price NUMERIC(10,2) NOT NULL
 );
 
-CREATE INDEX idx_order_items_order ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 
 -- 4. Profiles Table (extends Supabase Auth)
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT,
   phone TEXT,
@@ -125,29 +125,53 @@ CREATE POLICY "Products are viewable by everyone"
   ON products FOR SELECT
   USING (is_active = true);
 
-CREATE POLICY "Admins can do everything with products"
-  ON products FOR ALL
-  USING (
-    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+-- Admin check uses a SECURITY DEFINER function to avoid RLS recursion
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM profiles
+    WHERE id = auth.uid() AND role = 'admin'
   );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
 
--- Orders: users see their own, admins see all
+CREATE POLICY "Admins can insert products"
+  ON products FOR INSERT
+  WITH CHECK (is_admin());
+
+CREATE POLICY "Admins can update products"
+  ON products FOR UPDATE
+  USING (is_admin());
+
+CREATE POLICY "Admins can delete products"
+  ON products FOR DELETE
+  USING (is_admin());
+
+-- Orders: anyone can create, users see their own, admins see all
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can create orders"
+CREATE POLICY "Anyone can create orders"
   ON orders FOR INSERT
   WITH CHECK (true);
 
 CREATE POLICY "Users can view their own orders"
   ON orders FOR SELECT
-  USING (customer_email = auth.jwt()->>'email' OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (
+    customer_email = auth.jwt()->>'email'
+    OR is_admin()
+  );
 
 CREATE POLICY "Admins can update orders"
   ON orders FOR UPDATE
-  USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (is_admin());
 
--- Order Items: same as orders
+-- Order Items: anyone can insert, visibility follows orders
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can create order items"
+  ON order_items FOR INSERT
+  WITH CHECK (true);
 
 CREATE POLICY "Order items follow order access"
   ON order_items FOR SELECT
@@ -155,21 +179,20 @@ CREATE POLICY "Order items follow order access"
     EXISTS (
       SELECT 1 FROM orders
       WHERE orders.id = order_items.order_id
-      AND (orders.customer_email = auth.jwt()->>'email'
-           OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'))
+      AND (orders.customer_email = auth.jwt()->>'email' OR is_admin())
     )
   );
-
-CREATE POLICY "Anyone can create order items"
-  ON order_items FOR INSERT
-  WITH CHECK (true);
 
 -- Profiles: users see their own, admins see all
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view own profile"
   ON profiles FOR SELECT
-  USING (id = auth.uid() OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (id = auth.uid());
+
+CREATE POLICY "Admins can view all profiles"
+  ON profiles FOR SELECT
+  USING (is_admin());
 
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE
@@ -181,7 +204,9 @@ CREATE POLICY "Users can update own profile"
 -- Run this separately or via dashboard:
 -- 1. Go to Storage → Create bucket "product-images" (public)
 -- 2. Enable public access
-INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('product-images', 'product-images', true)
+ON CONFLICT (id) DO NOTHING;
 
 -- Allow public read access to product images
 CREATE POLICY "Product images are publicly accessible"
@@ -193,5 +218,5 @@ CREATE POLICY "Admins can manage product images"
   ON storage.objects FOR ALL
   USING (
     bucket_id = 'product-images'
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+    AND is_admin()
   );

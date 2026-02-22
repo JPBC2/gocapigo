@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { Product } from '../data/products';
+import type { Product } from '../data/supabase-products';
 
 export interface CartItem {
     product: Product;

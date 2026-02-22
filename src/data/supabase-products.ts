@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-// Re-export the Product interface (same shape as before)
+// Re-export the Product interface — uses camelCase to match existing components
 export interface Product {
     id: string;
     name: string;
@@ -9,9 +9,9 @@ export interface Product {
     stock: number;
     category: 'lightsticks' | 'accesorios' | 'photocards' | 'sleeves' | 'papeleria' | 'merchandise';
     artist: string;
-    image_url?: string;
+    image?: string;
     description?: string;
-    is_new?: boolean;
+    isNew?: boolean;
 }
 
 // ---------- Local fallback data ----------
@@ -35,12 +35,8 @@ export async function getProducts(): Promise<Product[]> {
     } catch (e) {
         console.warn('Supabase unavailable, using local data:', e);
     }
-    // Fallback: convert local products to match interface
-    return localProducts.map(p => ({
-        ...p,
-        image_url: p.image,
-        is_new: p.isNew,
-    }));
+    // Fallback: return local products as-is (already camelCase)
+    return localProducts;
 }
 
 /** Fetch single product by slug */
@@ -58,8 +54,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     } catch (e) {
         console.warn('Supabase unavailable, using local data for slug:', slug);
     }
-    const local = localProducts.find(p => p.slug === slug);
-    return local ? { ...local, image_url: local.image, is_new: local.isNew } : null;
+    return localProducts.find(p => p.slug === slug) || null;
 }
 
 /** Fetch products by category */
@@ -77,9 +72,7 @@ export async function getProductsByCategory(category: string): Promise<Product[]
     } catch {
         // fallback
     }
-    return localProducts
-        .filter(p => p.category === category)
-        .map(p => ({ ...p, image_url: p.image, is_new: p.isNew }));
+    return localProducts.filter(p => p.category === category);
 }
 
 /** Get categories with product counts */
@@ -112,7 +105,7 @@ export function getProductImageUrl(imagePath: string | undefined): string | null
     return data.publicUrl;
 }
 
-// Map DB row to Product interface
+// Map DB row (snake_case) to Product interface (camelCase)
 function mapDbProduct(row: any): Product {
     return {
         id: row.id,
@@ -122,8 +115,8 @@ function mapDbProduct(row: any): Product {
         stock: row.stock,
         category: row.category,
         artist: row.artist,
-        image_url: row.image_url,
+        image: row.image_url,
         description: row.description,
-        is_new: row.is_new,
+        isNew: row.is_new,
     };
 }

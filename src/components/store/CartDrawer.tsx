@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
-import { formatPrice } from '../../data/products';
+import { formatPrice } from '../../data/supabase-products';
 import './CartDrawer.css';
 
 export default function CartDrawer() {

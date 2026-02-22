@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { formatPrice } from '../../data/products';
+import { formatPrice } from '../../data/supabase-products';
+import { createOrder } from '../../lib/orders';
 import type { CartItem } from '../../context/CartContext';
 
 const CART_KEY = 'gocapigo-cart';
@@ -31,6 +32,8 @@ export default function CheckoutForm() {
     });
     const [step, setStep] = useState<'form' | 'confirm' | 'success'>('form');
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [orderError, setOrderError] = useState<string | null>(null);
 
     useEffect(() => {
         try {
@@ -58,11 +61,41 @@ export default function CheckoutForm() {
         if (isValid) setStep('confirm');
     };
 
-    const handleConfirm = () => {
-        // In production: send to Mercado Pago / backend
-        localStorage.removeItem(CART_KEY);
-        window.dispatchEvent(new CustomEvent('cart-updated', { detail: { count: 0 } }));
-        setStep('success');
+    const handleConfirm = async () => {
+        setIsSubmitting(true);
+        setOrderError(null);
+
+        try {
+            await createOrder({
+                customerName: form.name,
+                customerEmail: form.email,
+                customerPhone: form.phone,
+                shippingAddress: form.address,
+                shippingCity: form.city,
+                shippingState: form.state,
+                shippingZip: form.zip,
+                shippingZone: form.shippingZone,
+                shippingCost: shipping,
+                subtotal,
+                total,
+                notes: form.notes || undefined,
+                items: items.map(i => ({
+                    productId: i.product.id,
+                    productName: i.product.name,
+                    quantity: i.quantity,
+                    unitPrice: i.product.price,
+                })),
+            });
+
+            localStorage.removeItem(CART_KEY);
+            window.dispatchEvent(new CustomEvent('cart-updated', { detail: { count: 0 } }));
+            setStep('success');
+        } catch (err: any) {
+            console.error('Error creating order:', err);
+            setOrderError(err?.message || 'Hubo un error al procesar tu pedido. Intenta de nuevo.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (items.length === 0 && step !== 'success') {
@@ -229,16 +262,24 @@ export default function CheckoutForm() {
                             </div>
                         </div>
 
+                        {orderError && (
+                            <div style={{ background: 'rgba(220,53,69,0.1)', border: '1px solid rgba(220,53,69,0.3)', borderRadius: '8px', padding: '0.75rem 1rem', marginTop: '1rem', color: '#ff6b6b', fontSize: '0.9rem' }}>
+                                ⚠️ {orderError}
+                            </div>
+                        )}
+
                         <div className="confirm-payment-note">
                             <p>💳 Al confirmar, te enviaremos por correo las instrucciones de pago vía Mercado Pago o transferencia bancaria.</p>
                         </div>
 
                         <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                            <button className="btn btn-secondary btn-lg" onClick={() => setStep('form')} style={{ flex: 1 }}>
+                            <button className="btn btn-secondary btn-lg" onClick={() => setStep('form')} style={{ flex: 1 }}
+                                disabled={isSubmitting}>
                                 ← Editar datos
                             </button>
-                            <button className="btn btn-gold btn-lg" onClick={handleConfirm} style={{ flex: 1 }}>
-                                ✓ Confirmar pedido
+                            <button className="btn btn-gold btn-lg" onClick={handleConfirm} style={{ flex: 1 }}
+                                disabled={isSubmitting}>
+                                {isSubmitting ? '⏳ Procesando...' : '✓ Confirmar pedido'}
                             </button>
                         </div>
                     </div>

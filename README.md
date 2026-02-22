@@ -3,7 +3,7 @@
 Tienda online de merchandise K-Pop importado de Corea del Sur hacia México.  
 Operamos actualmente por Instagram como [@go.capi.go](https://instagram.com/go.capi.go) y esta plataforma web es la evolución digital del negocio.
 
-🌐 **Sitio en producción:** [gocapigo.pages.dev](https://gocapigo.pages.dev)  
+🌐 **Sitio en producción:** [gocapigo.com](https://gocapigo.com)  
 📦 **Repositorio:** [github.com/JPBC2/gocapigo](https://github.com/JPBC2/gocapigo)
 
 ---
