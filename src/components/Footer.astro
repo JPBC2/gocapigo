@@ -1,0 +1,154 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/images/logo-full.svg" alt="Go Capi Go" class="footer-logo" />
+        <p>Tu tienda de K-Pop favorita en México. Importamos directamente desde Corea del Sur para ti.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/go.capi.go" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Tienda</h4>
+        <a href="/productos">Catálogo</a>
+        <a href="/productos?category=albums">Álbumes</a>
+        <a href="/productos?category=photocards">Photocards</a>
+        <a href="/productos?category=lightsticks">Lightsticks</a>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Ayuda</h4>
+        <a href="/envios">Envíos</a>
+        <a href="/faq">Preguntas Frecuentes</a>
+        <a href="/contacto">Contacto</a>
+        <a href="/politica-privacidad">Política de Privacidad</a>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Nosotros</h4>
+        <a href="/nosotros">Nuestra Historia</a>
+        <a href="https://instagram.com/go.capi.go" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} Go Capi Go. Todos los derechos reservados.</p>
+      <p class="text-muted">Hecho con 💜 en México</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-3xl) 0 var(--space-xl);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .footer-logo {
+    height: 32px;
+    width: auto;
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-brand p {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    margin-bottom: var(--space-lg);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .footer-social a {
+    color: var(--color-text-muted);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+
+  .footer-social a:hover {
+    color: var(--color-primary);
+    background: rgba(152, 68, 173, 0.1);
+  }
+
+  .footer-links-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer-links-group h4 {
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-links-group a {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links-group a:hover {
+    color: var(--color-primary);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: var(--space-sm);
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

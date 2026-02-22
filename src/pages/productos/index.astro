@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import ProductGrid from '../../components/store/ProductGrid';
+import { products, categories } from '../../data/products';
+---
+
+<BaseLayout title="Catálogo" description="Explora nuestro catálogo completo de productos K-Pop: lightsticks, accesorios, sleeves y más merchandise oficial.">
+  <Navbar />
+
+  <section class="catalog-hero">
+    <div class="container">
+      <h1>Catálogo</h1>
+      <p class="text-muted">Explora toda nuestra colección de merchandise K-Pop — {products.length} productos disponibles</p>
+    </div>
+  </section>
+
+  <section class="catalog-content">
+    <div class="container">
+      <div class="catalog-layout">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar hide-mobile">
+          <div class="filter-group">
+            <h3>Categoría</h3>
+            {categories.map(cat => (
+              <label class="filter-option">
+                <input type="checkbox" value={cat.id} />
+                {cat.icon} {cat.label} <span class="filter-count">({cat.count})</span>
+              </label>
+            ))}
+          </div>
+          <div class="filter-group">
+            <h3>Artista</h3>
+            {[...new Set(products.map(p => p.artist))].sort().map(artist => (
+              <label class="filter-option">
+                <input type="checkbox" value={artist} />
+                {artist}
+              </label>
+            ))}
+          </div>
+          <div class="filter-group">
+            <h3>Precio</h3>
+            <label class="filter-option">
+              <input type="checkbox" value="0-100" /> $0 - $100
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" value="100-300" /> $100 - $300
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" value="300-500" /> $300 - $500
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" value="500+" /> $500+
+            </label>
+          </div>
+        </aside>
+
+        <!-- Products Grid -->
+        <div class="products-area">
+          <div class="products-toolbar">
+            <span class="product-count text-muted">Mostrando {products.length} productos</span>
+            <select class="input sort-select">
+              <option value="newest">Más recientes</option>
+              <option value="price-asc">Precio: menor a mayor</option>
+              <option value="price-desc">Precio: mayor a menor</option>
+              <option value="name">Nombre A-Z</option>
+            </select>
+          </div>
+          <div class="products-grid" id="products-grid">
+            <ProductGrid products={products} client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .catalog-hero {
+    padding: var(--space-3xl) 0 var(--space-xl);
+    text-align: center;
+    background-image: var(--gradient-glow);
+  }
+
+  .catalog-hero h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .catalog-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-2xl);
+    padding: var(--space-2xl) 0;
+  }
+
+  .filters-sidebar {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+  }
+
+  .filter-group {
+    margin-bottom: var(--space-xl);
+  }
+
+  .filter-group h3 {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .filter-option:hover {
+    color: var(--color-text);
+  }
+
+  .filter-option input[type="checkbox"] {
+    accent-color: var(--color-primary);
+  }
+
+  .filter-count {
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+  }
+
+  .products-area {
+    min-height: 50vh;
+  }
+
+  .products-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+  }
+
+  .sort-select {
+    width: auto;
+    min-width: 180px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 992px) {
+    .catalog-layout {
+      grid-template-columns: 1fr;
+    }
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+    .products-toolbar {
+      flex-direction: column;
+      gap: var(--space-md);
+      align-items: flex-start;
+    }
+    .sort-select {
+      width: 100%;
+    }
+  }
+</style>

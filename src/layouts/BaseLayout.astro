@@ -1,0 +1,28 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Go Capi Go — Tu tienda de K-Pop favorita en México. Álbumes, photocards, lightsticks y más merchandise oficial importada de Corea del Sur.'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#9844ad" />
+  <link rel="icon" type="image/svg+xml" href="/images/logo-icon.svg" />
+  <title>{title} | Go Capi Go</title>
+</head>
+<body>
+  <slot />
+</body>
+</html>

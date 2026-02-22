@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import CheckoutForm from '../components/store/CheckoutForm';
+---
+
+<BaseLayout title="Checkout" description="Completa tu pedido de merchandise K-Pop en Go Capi Go.">
+  <Navbar />
+
+  <section class="checkout-hero">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/productos">Catálogo</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Checkout</span>
+      </nav>
+      <h1>Checkout</h1>
+    </div>
+  </section>
+
+  <section class="checkout-section">
+    <div class="container">
+      <CheckoutForm client:load />
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .checkout-hero {
+    padding: var(--space-2xl) 0 var(--space-lg);
+    background-image: var(--gradient-glow);
+  }
+
+  .checkout-hero h1 {
+    font-size: var(--text-3xl);
+    margin-top: var(--space-sm);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-text-dim);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb-sep {
+    opacity: 0.4;
+  }
+
+  .checkout-section {
+    padding: var(--space-2xl) 0 var(--space-3xl);
+  }
+</style>

@@ -1,0 +1,447 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProductGrid from '../components/store/ProductGrid';
+import { products, categories, formatPrice } from '../data/products';
+
+const featuredProducts = products.slice(0, 8);
+---
+
+<BaseLayout title="Inicio">
+  <Navbar />
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-effects">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+    </div>
+    <div class="container hero-content">
+      <span class="badge badge-new animate-fade-in">✨ Nuevos productos cada semana</span>
+      <h1 class="hero-title animate-slide-up">
+        Tu K-Pop favorito,<br />
+        <span class="text-gradient">directo de Corea</span>
+      </h1>
+      <p class="hero-subtitle animate-slide-up">
+        Álbumes, photocards, lightsticks y más merchandise oficial. Importamos directamente desde Corea del Sur a México.
+      </p>
+      <div class="hero-actions animate-slide-up">
+        <a href="/productos" class="btn btn-primary btn-lg">
+          Ver Catálogo
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="https://instagram.com/go.capi.go" target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          Síguenos
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="hero-stats animate-fade-in">
+        <div class="stat">
+          <span class="stat-number">24</span>
+          <span class="stat-label">Productos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">🇰🇷</span>
+          <span class="stat-label">Importación directa</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">🇲🇽</span>
+          <span class="stat-label">Envío nacional</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="section categories-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Explora por <span class="text-gradient">Categoría</span></h2>
+        <p>Encuentra justo lo que buscas</p>
+      </div>
+      <div class="categories-grid">
+        {categories.map(cat => (
+          <a href={`/productos?category=${cat.id}`} class="category-card">
+            <div class="category-icon">{cat.icon}</div>
+            <h3>{cat.label}</h3>
+            <p>{cat.count} productos</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="section featured-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Productos <span class="text-gradient">Destacados</span></h2>
+        <p>Lo más nuevo de nuestro catálogo</p>
+      </div>
+      <div class="featured-grid" id="featured-products">
+        <ProductGrid products={featuredProducts} client:load />
+      </div>
+      <div style="text-align: center; margin-top: var(--space-xl);">
+        <a href="/productos" class="btn btn-secondary">Ver todos los productos →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Us Section -->
+  <section class="section why-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>¿Por qué <span class="text-gradient">Go Capi Go</span>?</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card card-glass">
+          <div class="why-icon">🛡️</div>
+          <h3>100% Original</h3>
+          <p>Todos nuestros productos son oficiales, importados directamente desde Corea del Sur.</p>
+        </div>
+        <div class="why-card card-glass">
+          <div class="why-icon">📦</div>
+          <h3>Envío Seguro</h3>
+          <p>Empacamos con cuidado para que tu pedido llegue en perfectas condiciones.</p>
+        </div>
+        <div class="why-card card-glass">
+          <div class="why-icon">💜</div>
+          <h3>Somos Fans</h3>
+          <p>Entendemos tu pasión porque compartimos la misma. Seleccionamos cada producto con amor.</p>
+        </div>
+        <div class="why-card card-glass">
+          <div class="why-icon">🌎</div>
+          <h3>En México</h3>
+          <p>Precios en pesos mexicanos, envíos nacionales y atención personalizada en español.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section cta-section">
+    <div class="container">
+      <div class="cta-card card-glass">
+        <h2>¿Lista para tu próximo álbum?</h2>
+        <p>Explora nuestro catálogo completo y encuentra el regalo perfecto para ti o para alguien especial.</p>
+        <a href="/productos" class="btn btn-gold btn-lg">Ir al Catálogo</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* --- Hero --- */
+  .hero {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: var(--space-3xl) 0;
+  }
+
+  .hero-bg-effects {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+  }
+
+  .hero-orb-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--color-primary);
+    top: -15%;
+    right: -10%;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .hero-orb-2 {
+    width: 350px;
+    height: 350px;
+    background: var(--color-accent);
+    bottom: -10%;
+    left: -5%;
+    animation: float 10s ease-in-out infinite reverse;
+  }
+
+  .hero-orb-3 {
+    width: 200px;
+    height: 200px;
+    background: var(--color-gold);
+    top: 40%;
+    left: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  .hero-title {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 700px;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg) var(--space-2xl);
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--color-text);
+  }
+
+  .stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--color-border);
+  }
+
+  /* --- Categories --- */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .category-card {
+    padding: var(--space-xl);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transition: all var(--transition-base);
+    text-decoration: none;
+  }
+
+  .category-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .category-card:hover .category-icon {
+    transform: scale(1.15);
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-md);
+    transition: transform var(--transition-spring);
+  }
+
+  .category-card h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+  }
+
+  .category-card p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* --- Featured Products --- */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .product-placeholder {
+    padding: var(--space-md);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .placeholder-shimmer {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-bg-elevated) 50%, var(--color-surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .placeholder-text {
+    height: 16px;
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-md);
+  }
+
+  .placeholder-text.short {
+    width: 60%;
+    height: 14px;
+    margin-top: var(--space-sm);
+  }
+
+  /* --- Why Section --- */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .why-card {
+    padding: var(--space-xl);
+    text-align: center;
+    transition: all var(--transition-base);
+  }
+
+  .why-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-border-hover);
+  }
+
+  .why-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .why-card h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-sm);
+  }
+
+  .why-card p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* --- CTA --- */
+  .cta-card {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+    background-image: var(--gradient-glow);
+    background-size: 100% 100%;
+  }
+
+  .cta-card h2 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .cta-card p {
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+    max-width: 500px;
+    margin: 0 auto var(--space-xl);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 992px) {
+    .categories-grid,
+    .featured-grid,
+    .why-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero {
+      min-height: 70vh;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+    }
+
+    .stat-divider {
+      width: 60px;
+      height: 1px;
+    }
+
+    .categories-grid,
+    .featured-grid,
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+  }
+</style>

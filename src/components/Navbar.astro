@@ -1,0 +1,228 @@
+---
+// Navbar component for Go Capi Go
+---
+
+<header class="navbar">
+  <div class="container navbar-inner">
+    <a href="/" class="navbar-logo" aria-label="Inicio">
+      <img src="/images/logo-full.svg" alt="Go Capi Go" class="logo-full" />
+      <img src="/images/logo-icon.svg" alt="Go Capi Go" class="logo-icon" />
+    </a>
+
+    <nav class="navbar-links hide-mobile" id="nav-links">
+      <a href="/">Inicio</a>
+      <a href="/productos">Catálogo</a>
+      <a href="/nosotros">Nosotros</a>
+      <a href="/contacto">Contacto</a>
+    </nav>
+
+    <div class="navbar-actions">
+      <button class="navbar-cart" aria-label="Carrito de compras" id="cart-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <button class="navbar-toggle hide-desktop" aria-label="Menú" id="menu-toggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <nav class="mobile-menu-links">
+      <a href="/">Inicio</a>
+      <a href="/productos">Catálogo</a>
+      <a href="/nosotros">Nosotros</a>
+      <a href="/contacto">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: rgba(13, 11, 18, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-full {
+    height: 36px;
+    width: auto;
+  }
+
+  .logo-icon {
+    display: none;
+    height: 36px;
+    width: auto;
+  }
+
+  .navbar-links {
+    display: flex;
+    gap: var(--space-xl);
+  }
+
+  .navbar-links a {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: color var(--transition-fast);
+    position: relative;
+  }
+
+  .navbar-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
+  }
+
+  .navbar-links a:hover {
+    color: var(--color-text);
+  }
+
+  .navbar-links a:hover::after {
+    width: 100%;
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .navbar-cart {
+    position: relative;
+    color: var(--color-text-muted);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+
+  .navbar-cart:hover {
+    color: var(--color-text);
+    background: rgba(152, 68, 173, 0.1);
+  }
+
+  .cart-count {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--color-accent);
+    border-radius: 50%;
+  }
+
+  .navbar-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--space-sm);
+  }
+
+  .navbar-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-text-muted);
+    border-radius: 2px;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-menu {
+    display: none;
+    padding: var(--space-lg) var(--container-padding);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-menu.open {
+    display: block;
+  }
+
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .mobile-menu-links a {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    padding: var(--space-sm) 0;
+    transition: color var(--transition-fast);
+  }
+
+  .mobile-menu-links a:hover {
+    color: var(--color-text);
+  }
+
+  @media (max-width: 768px) {
+    .logo-full { display: none; }
+    .logo-icon { display: block; }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    menu?.classList.toggle('open');
+  });
+
+  // Cart toggle
+  const cartBtn = document.getElementById('cart-btn');
+  cartBtn?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('toggle-cart'));
+  });
+
+  // Cart count sync
+  const cartCount = document.getElementById('cart-count');
+  window.addEventListener('cart-updated', ((e: CustomEvent) => {
+    if (cartCount) cartCount.textContent = String(e.detail.count);
+  }) as EventListener);
+
+  // Initialize cart count from localStorage
+  try {
+    const stored = localStorage.getItem('gocapigo-cart');
+    if (stored && cartCount) {
+      const items = JSON.parse(stored);
+      const count = items.reduce((s: number, i: any) => s + i.quantity, 0);
+      cartCount.textContent = String(count);
+    }
+  } catch {}
+</script>
