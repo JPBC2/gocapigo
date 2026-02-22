@@ -6,8 +6,9 @@ dist/
 
 # environment variables
 .env
-.env.production
 .env.local
+.env.production
+.env.production.local
 
 # IDE
 .vscode/
