@@ -84,7 +84,7 @@ export default function UserMenu() {
                 aria-label="Menú de usuario"
             >
                 <span className="user-avatar">{initial}</span>
-                <span className="hide-mobile">Mi cuenta</span>
+                <span>Mi cuenta</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                     style={{ transition: 'transform 150ms', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
                     <polyline points="6 9 12 15 18 9" />
