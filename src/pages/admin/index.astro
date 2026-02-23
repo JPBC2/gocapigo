@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import AdminDashboard from '../../components/admin/AdminDashboard';
+---
+
+<BaseLayout title="Admin - Dashboard" description="Panel de administración Go Capi Go">
+  <Navbar />
+  <AdminDashboard client:only="react" />
+</BaseLayout>

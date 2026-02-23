@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import AdminOrders from '../../components/admin/AdminOrders';
+---
+
+<BaseLayout title="Admin - Pedidos" description="Gestión de pedidos Go Capi Go">
+  <Navbar />
+  <AdminOrders client:only="react" />
+</BaseLayout>

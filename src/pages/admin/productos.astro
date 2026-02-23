@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import AdminProducts from '../../components/admin/AdminProducts';
+---
+
+<BaseLayout title="Admin - Productos" description="Gestión de productos Go Capi Go">
+  <Navbar />
+  <AdminProducts client:only="react" />
+</BaseLayout>

@@ -8,6 +8,7 @@
 @import './product-card.css';
 @import './checkout.css';
 @import './auth.css';
+@import './admin.css';
 
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
