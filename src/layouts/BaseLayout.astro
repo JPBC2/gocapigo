@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import AuthCallback from '../components/store/AuthCallback';
 
 interface Props {
   title: string;
@@ -23,6 +24,7 @@ const {
   <title>{title} | Go Capi Go</title>
 </head>
 <body>
+  <AuthCallback client:load />
   <slot />
 </body>
 </html>
