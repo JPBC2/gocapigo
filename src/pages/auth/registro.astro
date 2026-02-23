@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import AuthForm from '../../components/store/AuthForm';
+---
+
+<BaseLayout title="Crear cuenta" description="Crea tu cuenta en Go Capi Go y únete a la comunidad K-Pop.">
+  <Navbar />
+
+  <section class="auth-page">
+    <AuthForm initialMode="register" client:load />
+  </section>
+
+  <Footer />
+</BaseLayout>

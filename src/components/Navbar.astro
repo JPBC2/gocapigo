@@ -1,5 +1,6 @@
 ---
 // Navbar component for Go Capi Go
+import UserMenu from './store/UserMenu';
 ---
 
 <header class="navbar">
@@ -17,6 +18,7 @@
     </nav>
 
     <div class="navbar-actions">
+      <UserMenu client:load />
       <button class="navbar-cart" aria-label="Carrito de compras" id="cart-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -37,6 +39,7 @@
       <a href="/productos">Catálogo</a>
       <a href="/nosotros">Nosotros</a>
       <a href="/contacto">Contacto</a>
+      <a href="/auth/login">Mi cuenta</a>
     </nav>
   </div>
 </header>
