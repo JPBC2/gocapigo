@@ -66,7 +66,7 @@ export default function UserMenu() {
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
-                <span className="hide-mobile">Ingresar</span>
+                <span className="hide-mobile">Iniciar sesión</span>
             </a>
         );
     }
@@ -84,7 +84,7 @@ export default function UserMenu() {
                 aria-label="Menú de usuario"
             >
                 <span className="user-avatar">{initial}</span>
-                <span className="hide-mobile">{displayName.split(' ')[0]}</span>
+                <span className="hide-mobile">Mi cuenta</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                     style={{ transition: 'transform 150ms', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
                     <polyline points="6 9 12 15 18 9" />
